@@ -6,7 +6,7 @@ import EmailVerification from "./pages/Register/EmailVerification";
 import ResetPassword from "./pages/Register/ResetPassword";
 import Home from "./pages/Home/Home";
 import Story from "./pages/Home/Story";
-import Summarization from "./pages/Home/summarziation";
+import Summarization from "./pages/Home/Summarziation";
 
 function App() {
   return (
