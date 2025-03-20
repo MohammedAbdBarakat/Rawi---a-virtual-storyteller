@@ -11,10 +11,12 @@ const StoryPage = () => {
     const [isTransitioning, setIsTransitioning] = useState(true);
     const [story, setStory] = useState("");
     const [storyLanguage, setStoryLanguage] = useState("");
+    const [storyLength, setStoryLength] = useState(""); // Add storyLength state
     const [isPlaying, setIsPlaying] = useState(false);
     const [playbackRate, setPlaybackRate] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [audioReady, setAudioReady] = useState(false); // Track if audio is ready
+    const [isError, setIsError] = useState(""); // Track error messages
 
     const storyTellerAnimationContainer = useRef(null);
     const audioRef = useRef(null);
@@ -25,6 +27,9 @@ const StoryPage = () => {
         }
         if (location.state && location.state.language) {
             setStoryLanguage(location.state.language);
+        }
+        if (location.state && location.state.storyLength) {
+            setStoryLength(location.state.storyLength); // Set storyLength from location state
         }
     }, [location]);
 
@@ -69,6 +74,19 @@ const StoryPage = () => {
     };
 
     const generateSound = async () => {
+        // Clear any previous error message
+        setIsError("");
+        
+        // Validation for long stories
+        if (storyLength == 2) {
+            setIsError(
+                storyLanguage === "Arabic"
+                    ? "نأسف، ولكن توليد الصوت غير متاح حاليًا للقصص الطويلة. نحن نعمل على إضافة هذه الميزة قريبًا!"
+                    : "We're sorry, but sound generation is currently unavailable for long stories. We're working on adding this feature soon!"
+            );
+            return; // Exit the function early
+        }
+
         try {
             setIsLoading(true);
             setAudioReady(false); // Reset audio ready state
@@ -83,7 +101,7 @@ const StoryPage = () => {
                 headers["language"] = "ar";
             }
             console.log("story: ", story);
-            
+
             const response = await axios.post(
                 "https://rawi.onrender.com/api/TextToSpeech/synthesize",
                 story,
@@ -108,6 +126,11 @@ const StoryPage = () => {
             }
         } catch (error) {
             console.log("Sound generation error:", error);
+            setIsError(
+                storyLanguage === "Arabic"
+                    ? "حدث خطأ أثناء توليد الصوت. يرجى المحاولة مرة أخرى لاحقًا."
+                    : "An error occurred while generating the audio. Please try again later."
+            );
         } finally {
             setIsLoading(false);
         }
@@ -128,9 +151,16 @@ const StoryPage = () => {
                         </p>
                     </div>
 
+                    {/* Error Message */}
+                    {isError && (
+                        <div className={`absolute top-4 left-1/2 transform -translate-x-1/2 bg-[--secondary] p-4 rounded-lg shadow-lg ${storyLanguage === "Arabic" ? "text-right" : "text-left"}`}>
+                            <p className="text-[--text]">{isError}</p>
+                        </div>
+                    )}
+
                     {/* Mini Sound Player */}
                     <div
-                        className={`absolute -right-16 top-0 flex flex-col space-y-2 bg-[--secondary] p-4 rounded-r-lg shadow-lg transition-all duration-300`}
+                        className={`absolute -right-16 top-0 max-w-16 flex flex-col space-y-2 bg-[--secondary] p-4 rounded-r-lg shadow-lg transition-all duration-300`}
                     >
                         {/* Generate Speech / Play Button */}
                         <button

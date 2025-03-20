@@ -45,8 +45,8 @@ const StoryGenerationSection = ({ isActive, setStory, setActiveFeature}) => {
             setError("The name of the main character must be at least 3 letters")
             return;
         }
-        if (numberOfCharacters < 1 || numberOfCharacters > 4) {
-            setError("The Number of story characters must be between 1 and 4")
+        if (numberOfCharacters < 2 || numberOfCharacters > 8) {
+            setError("The Number of story characters must be between 2 and 8")
             return;
         }
 
@@ -69,7 +69,7 @@ const StoryGenerationSection = ({ isActive, setStory, setActiveFeature}) => {
                 { headers }
             );
     
-            nav("/story", { state: { story: response.data, language: storyLanguage } });
+            nav("/story", { state: { story: response.data, language: storyLanguage, storyLength: storyLength } });
         } catch (error) {
             console.log("Story generation, story inputs sending failed! ", error);
             if (error.response) {
@@ -133,7 +133,7 @@ const StoryGenerationSection = ({ isActive, setStory, setActiveFeature}) => {
     ];
     
     const storyLengthOptions = [
-        { label: "FlashFiction", value: 0 },
+        { label: "FlashStory", value: 0 },
         { label: "ShortStory", value: 1 },
         { label: "Novella", value: 2 },
     ];
@@ -214,7 +214,7 @@ const StoryGenerationSection = ({ isActive, setStory, setActiveFeature}) => {
                     type="text"
                     value={nameOfMainCharacter}
                     onChange={(e) => setNameOfMainCharacter(e.target.value)}
-                    placeholder="Leo"
+                    placeholder="Character name"
                     className="w-full p-2 bodyFont rounded-lg bg-[--secondary] text-[--text] placeholder:text-[--text] border border-[--text] focus:outline-none focus:border-[--Buttons]"
                 />
             </div>
