@@ -4,7 +4,7 @@ import Login from "./pages/Register/Login";
 import Signup from "./pages/Register/Signup";
 import EmailVerification from "./pages/Register/EmailVerification";
 import ResetPassword from "./pages/Register/ResetPassword";
-import Home from "./pages/Home/home";
+import Home from "./pages/Home/Home";
 import Story from "./pages/Home/Story";
 import Summarization from "./pages/Home/summarziation";
 
